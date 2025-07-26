@@ -1,0 +1,145 @@
+"""
+Pytest configuration for Word-GPT-Plus plugin tests.
+"""
+
+import os
+import sys
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+# Add the project root to the Python path
+project_root = Path(__file__).parent.parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+# Create necessary directories
+mcp_dir = project_root / 'mcp'
+mcp_dir.mkdir(exist_ok=True)
+
+# Create __init__.py in mcp directory
+mcp_init = mcp_dir / '__init__.py'
+mcp_init.touch()
+
+# Create ai directory
+ai_dir = mcp_dir / 'ai'
+ai_dir.mkdir(exist_ok=True)
+
+# Create __init__.py in mcp/ai directory
+ai_init = ai_dir / '__init__.py'
+ai_init.touch()
+
+# Create plugin.py with mock AIPlugin class
+plugin_file = ai_dir / 'plugin.py'
+with open(plugin_file, 'w', encoding='utf-8') as f:
+    f.write('''"""
+Mock AIPlugin module for testing.
+"""
+from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Optional, Type, TypeVar
+
+T = TypeVar('T', bound='AIPlugin')
+
+class AIPlugin(ABC):
+    """Base class for all AI plugins."""
+    
+    def __init__(self, config: Dict[str, Any] = None):
+        """Initialize the plugin with optional configuration."""
+        self.config = config or {}
+        self._context = {}
+    
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Return the name of the plugin."""
+        pass
+    
+    @property
+    @abstractmethod
+    def version(self) -> str:
+        """Return the version of the plugin."""
+        pass
+    
+    @property
+    def description(self) -> str:
+        """Return a description of the plugin."""
+        return ""
+    
+    def set_context(self, key: str, value: Any) -> None:
+        """Set a value in the plugin's context."""
+        self._context[key] = value
+    
+    def get_context(self, key: str, default: Any = None) -> Any:
+        """Get a value from the plugin's context."""
+        return self._context.get(key, default)
+    
+    def get_editor_components(self) -> Dict[str, Any]:
+        """Return editor UI components provided by this plugin."""
+        return {}
+    
+    def update_editor_state(self, state: Dict[str, Any]) -> None:
+        """Update the editor state."""
+        pass
+    
+    def initialize(self) -> bool:
+        """Initialize the plugin."""
+        return True
+    
+    def on_enable(self) -> None:
+        """Called when the plugin is enabled."""
+        pass
+    
+    def on_disable(self) -> None:
+        """Called when the plugin is disabled."""
+        pass
+''')
+
+# Import the mock AIPlugin class
+try:
+    from mcp.ai.plugin import AIPlugin
+except ImportError as e:
+    print(f"Warning: Could not import AIPlugin: {e}")
+    # Define a fallback AIPlugin class if import fails
+    class AIPlugin:  # type: ignore
+        def __init__(self, config=None):
+            self.config = config or {}
+            self._context = {}
+        
+        def set_context(self, key, value):
+            self._context[key] = value
+            
+        def get_context(self, key, default=None):
+            return self._context.get(key, default)
+        
+        def get_editor_components(self):
+            return {}
+        
+        def update_editor_state(self, state):
+            pass
+
+# Add the test directory to the Python path
+test_dir = Path(__file__).parent
+if str(test_dir) not in sys.path:
+    sys.path.insert(0, str(test_dir))
+    
+    def __init__(self, config=None):
+        """Initialize the plugin with the given configuration."""
+        self.config = config or {}
+        self._initialized = False
+    
+    def initialize(self):
+        """Initialize the plugin."""
+        self._initialized = True
+        return True
+    
+    def on_enable(self):
+        """Called when the plugin is enabled."""
+        if not self._initialized and not self.initialize():
+            raise RuntimeError("Failed to initialize plugin")
+    
+    def on_disable(self):
+        """Called when the plugin is disabled."""
+        pass
+    
+    def get_editor_components(self):
+        """Get UI components for the editor."""
+        return {}
+""")

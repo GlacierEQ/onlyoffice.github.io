@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word GPT Plus</title>
+    <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"></script>
+    <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins-ui.js"></script>
+    <link rel="stylesheet" href="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.css">
+    <link rel="stylesheet" href="resources/styles/main.css">
+</head>
+
+<body class="ms-font-m ms-Fabric">
+    <div class="taskpane">
+        <header class="taskpane-header">
+            <div class="logo-container">
+                <img src="resources/icons/icon-32.png" alt="Word GPT Plus Logo" class="logo">
+                <h1>Word GPT Plus</h1>
+            </div>
+            <button id="mode-toggle" class="mode-toggle" title="Toggle Mode">
+                <span class="mode-icon">🧠</span>
+            </button>
+        </header>
+
+        <main class="taskpane-content">
+            <!-- Main app container -->
+            <div id="app">
+                <!-- App content will be dynamically inserted here -->
+                <div class="loading-container flex flex-center" style="height: 100%;">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Initializing Word GPT Plus...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="taskpane-footer">
+            <div class="footer-buttons">
+                <button id="settings-btn" class="btn-link">Settings</button>
+                <button id="help-btn" class="btn-link">Help</button>
+            </div>
+            <div id="status-message" class="status-message"></div>
+        </footer>
+    </div>
+
+    <!-- App loading screen -->
+    <div id="app-loading" class="app-loading">
+        <div class="spinner">
+            <div class="ms-Spinner ms-Spinner--large"></div>
+        </div>
+        <p class="ms-fontWeight-semibold">Loading Word GPT Plus...</p>
+    </div>
+
+    <!-- Main app container -->
+    <div id="app-container" class="app-container hidden">
+        <header class="app-header">
+            <h1 class="ms-font-xl">Word GPT Plus</h1>
+            <div class="app-version">v<span id="app-version">1.0.0</span></div>
+        </header>
+
+        <main class="app-main">
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button id="tab-prompt" class="tab-button active">Prompt</button>
+                    <button id="tab-automation" class="tab-button">Automation</button>
+                    <button id="tab-explore" class="tab-button">Explore</button>
+                </div>
+                <div class="tab-content">
+                    <!-- Prompt tab content -->
+                    <div id="prompt-tab" class="tab-panel active">
+                        <div class="templates-container">
+                            <h3 class="ms-fontWeight-semibold">Templates</h3>
+                            <div id="templates" class="templates"></div>
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-input-container">
+                                <label for="prompt" class="ms-fontWeight-semibold">Enter your prompt:</label>
+                                <textarea id="prompt" class="prompt-textarea"
+                                    placeholder="Type your prompt here or select a template above..."></textarea>
+                            </div>
+                            <div class="button-container">
+                                <button id="generate" class="ms-Button ms-Button--primary">
+                                    <span class="ms-Button-label">Generate</span>
+                                </button>
+                                <button id="settings-toggle" class="ms-Button ms-Button--default">
+                                    <span class="ms-Button-label">⚙️</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="settings-panel" class="settings-panel" style="display: none;">
+                            <h3 class="ms-fontWeight-semibold">Settings</h3>
+                            <div class="settings-form">
+                                <div class="settings-group">
+                                    <label for="local-endpoint" class="ms-fontWeight-semibold">Local Endpoint:</label>
+                                    <input type="text" id="local-endpoint" class="settings-input"
+                                        placeholder="http://localhost:11434/api">
+                                </div>
+                                <div class="settings-group">
+                                    <label for="model-name" class="ms-fontWeight-semibold">Model Name:</label>
+                                    <input type="text" id="model-name" class="settings-input" placeholder="llama2">
+                                </div>
+                                <div class="settings-actions">
+                                    <button id="save-settings" class="ms-Button ms-Button--primary">
+                                        <span class="ms-Button-label">Save</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-container">
+                            <div class="result-header">
+                                <h3 class="ms-fontWeight-semibold">Result</h3>
+                                <div class="result-actions">
+                                    <button id="insert" class="ms-Button ms-Button--primary">
+                                        <span class="ms-Button-label">Insert</span>
+                                    </button>
+                                    <button id="clear-btn" class="ms-Button ms-Button--default">
+                                        <span class="ms-Button-label">Clear</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="result" class="result">Generated text will appear here...</div>
+                        </div>
+                        <div id="status" class="status-message" style="display: none;"></div>
+                    </div>
+
+                    <!-- Automation tab content -->
+                    <div id="automation-tab" class="tab-panel">
+                        <div id="automation-container" class="automation-container">
+                            <!-- Automation UI will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Explore tab content -->
+                    <div id="explore-tab" class="tab-panel">
+                        <div class="explore-container">
+                            <h3 class="ms-fontWeight-semibold">Multiverse Writing</h3>
+                            <p>Explore different variations of your text in parallel dimensions.</p>
+                            <div class="explore-actions">
+                                <button id="create-universes" class="ms-Button ms-Button--primary">
+                                    <span class="ms-Button-label">Create Universes</span>
+                                </button>
+                            </div>
+                            <div id="multiverse-container" class="multiverse-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <p>Word GPT Plus - Enhance your writing with AI</p>
+        </footer>
+    </div>
+</body>
+
+</html>

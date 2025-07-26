@@ -1,0 +1,41 @@
+{
+    "name": "Word GPT Plus",
+    "guid": "asc.{FFE1F140-77C1-4C93-8D81-42851E354181}",
+    "version": "1.0.0",
+
+    "variations": [
+        {
+            "description": "Word GPT Plus",
+            "url": "taskpane.html",
+
+            "icons": [
+                "resources/assets/icon-32.png"
+            ],
+            "icons2": [
+                {
+                    "100%": {
+                        "normal": "resources/assets/icon-32.png"
+                    }
+                }
+            ],
+            "isViewer": true,
+            "EditorsSupport": [
+                "word"
+            ],
+
+            "isVisual": true,
+            "isModal": false,
+            "isInsideMode": false,
+
+            "initDataType": "none",
+            "initData": "",
+
+            "buttons": [
+            ],
+
+            "events": [
+                "onDocumentContentReady"
+            ]
+        }
+    ]
+}
