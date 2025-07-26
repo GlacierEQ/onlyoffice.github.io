@@ -1,0 +1,228 @@
+{
+  "mcp_master": {
+    "version": "1.0.0",
+    "last_updated": "2025-07-26T04:30:00Z",
+    "system_name": "ONLYOFFICE MCP Master Control System",
+    "architecture": "distributed",
+    "zones": [
+      {
+        "zone_id": "DOCUMENT_CORE",
+        "name": "Document Core",
+        "description": "Core document processing and management",
+        "priority": 1,
+        "components": [
+          {
+            "name": "DocumentProcessor",
+            "type": "service",
+            "description": "Central document processing and conversion service",
+            "status": "active",
+            "functions": {
+              "convertDocument": {
+                "description": "Convert document between different formats",
+                "parameters": {
+                  "source": "string|binary",
+                  "sourceFormat": "string",
+                  "targetFormat": "string",
+                  "options": "object"
+                },
+                "returns": {
+                  "convertedDocument": "binary",
+                  "conversionMetrics": "object"
+                }
+              },
+              "extractText": {
+                "description": "Extract text from document",
+                "parameters": {
+                  "document": "string|binary",
+                  "documentType": "string",
+                  "options": "object"
+                },
+                "returns": {
+                  "text": "string",
+                  "metadata": "object"
+                }
+              }
+            },
+            "dependencies": ["StorageManager", "EventBus"],
+            "config": {
+              "supported_formats": ["docx", "xlsx", "pptx", "odt", "ods", "odp", "pdf", "txt", "rtf"],
+              "max_file_size": "100MB",
+              "timeout": 300
+            }
+          }
+        ]
+      },
+      {
+        "zone_id": "COLLABORATION",
+        "name": "Collaboration",
+        "description": "Real-time collaboration features",
+        "priority": 2,
+        "components": [
+          {
+            "name": "CollaborationService",
+            "type": "service",
+            "description": "Real-time document collaboration",
+            "status": "active",
+            "functions": {
+              "createSession": {
+                "description": "Create new collaboration session",
+                "parameters": {
+                  "documentId": "string",
+                  "participants": "array",
+                  "permissions": "object"
+                },
+                "returns": {
+                  "sessionId": "string",
+                  "accessToken": "string"
+                }
+              },
+              "joinSession": {
+                "description": "Join existing collaboration session",
+                "parameters": {
+                  "sessionId": "string",
+                  "userInfo": "object"
+                },
+                "returns": {
+                  "status": "string",
+                  "documentState": "object"
+                }
+              },
+              "applyChanges": {
+                "description": "Apply changes to collaborative document",
+                "parameters": {
+                  "sessionId": "string",
+                  "changes": "array",
+                  "versionVector": "object"
+                },
+                "returns": {
+                  "acknowledged": "boolean",
+                  "newVersion": "object"
+                }
+              }
+            },
+            "dependencies": ["DocumentProcessor", "AuthManager"],
+            "config": {
+              "max_participants": 50,
+              "history_retention": "30d",
+              "conflict_resolution": "operational_transformation"
+            }
+          }
+        ]
+      },
+      {
+        "zone_id": "INTEGRATION",
+        "name": "Integration",
+        "description": "Third-party system integration",
+        "priority": 3,
+        "components": [
+          {
+            "name": "StorageConnector",
+            "type": "service",
+            "description": "Connect to various storage providers",
+            "status": "active",
+            "functions": {
+              "connectStorage": {
+                "description": "Connect to external storage",
+                "parameters": {
+                  "provider": "string",
+                  "credentials": "object",
+                  "options": "object"
+                },
+                "returns": {
+                  "connectionId": "string",
+                  "capabilities": "object"
+                }
+              },
+              "synchronize": {
+                "description": "Synchronize documents with external storage",
+                "parameters": {
+                  "connectionId": "string",
+                  "direction": "string",
+                  "options": "object"
+                },
+                "returns": {
+                  "syncId": "string",
+                  "status": "string"
+                }
+              }
+            },
+            "dependencies": ["DocumentProcessor"],
+            "config": {
+              "supported_providers": ["googledrive", "dropbox", "onedrive", "nextcloud", "webdav"],
+              "sync_interval": 300,
+              "max_retry_attempts": 3
+            }
+          }
+        ]
+      }
+    ],
+    "global_functions": {
+      "systemStatus": {
+        "description": "Get status of the document processing system",
+        "parameters": {
+          "includeDetails": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "returns": {
+          "status": "string",
+          "components": "object",
+          "metrics": "object"
+        }
+      },
+      "searchDocuments": {
+        "description": "Search across all documents",
+        "parameters": {
+          "query": "string",
+          "filters": "object",
+          "options": "object"
+        },
+        "returns": {
+          "results": "array",
+          "facets": "object"
+        }
+      },
+      "batchProcess": {
+        "description": "Process multiple documents in batch",
+        "parameters": {
+          "documents": "array",
+          "operation": "string",
+          "options": "object"
+        },
+        "returns": {
+          "jobId": "string",
+          "status": "string"
+        }
+      }
+    },
+    "config": {
+      "system_name": "ONLYOFFICE Document Services",
+      "environment": "production",
+      "log_level": "info",
+      "document": {
+        "auto_save_interval": 30,
+        "version_history_limit": 50,
+        "max_file_size": "100MB"
+      },
+      "collaboration": {
+        "auto_accept_invites": true,
+        "default_permissions": {
+          "edit": true,
+          "print": true,
+          "download": true
+        }
+      },
+      "security": {
+        "encryption_at_rest": true,
+        "audit_logging": true,
+        "compliance_frameworks": ["GDPR", "HIPAA"]
+      },
+      "performance": {
+        "cache_enabled": true,
+        "cache_ttl": 3600,
+        "concurrent_operations": 10
+      }
+    }
+  }
+}

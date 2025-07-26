@@ -1,0 +1,47 @@
+[Unit]
+Description={{ mcp_description | default('MCP Service') }}
+After=network.target
+
+[Service]
+Type=simple
+User={{ mcp_user | default('mcp') }}
+Group={{ mcp_group | default('mcp') }}
+WorkingDirectory={{ mcp_working_dir | default('/opt/mcp') }}
+
+# Environment variables
+{% for key, value in mcp_environment.items() %}
+Environment="{{ key }}={{ value }}"
+{% endfor %}
+
+# Main command to execute
+ExecStart={{ mcp_command }}
+
+# Security options
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier={{ mcp_name }}
+
+# Restart configuration
+Restart=on-failure
+RestartSec=5s
+StartLimitInterval=200
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

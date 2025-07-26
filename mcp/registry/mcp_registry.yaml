@@ -1,0 +1,57 @@
+# Operator MCP Registry
+# Location: /mcp/registry/mcp_registry.yaml
+# This file contains the complete registry of MCPs (Microservice Control Planes) for the Windsurf platform.
+# Each MCP is organized by functional zones and includes metadata, status, and configuration details.
+
+mcp_zones:
+  - zone: "SYSTEM/PROCESS"
+    description: "Core system process management and orchestration"
+    mcps:
+      - name: "Supervisor"
+        desc: "Process supervisor for agent restart and monitoring"
+        url: "http://supervisord.org/"
+        functions:
+          - "Auto-restart agents/services"
+          - "Log process incidents"
+        module: "supervisor.conf"
+        status: "active"
+        config_template: "supervisor.conf.j2"
+        
+      - name: "systemd"
+        desc: "Linux system and service manager"
+        url: "https://www.freedesktop.org/wiki/Software/systemd/"
+        functions:
+          - "Start/stop system services"
+          - "Restart on failure"
+        module: "systemd.service"
+        status: "active"
+        config_template: "systemd.service.j2"
+
+  - zone: "AI/AGENT"
+    description: "AI and agent management components"
+    mcps:
+      - name: "LangChain"
+        desc: "Multi-LLM logic, chaining, and routing"
+        url: "https://python.langchain.com/"
+        functions:
+          - "LLM orchestration"
+          - "Output validation"
+        module: "langchain_router.py"
+        status: "active"
+        config_template: "langchain_config.yaml.j2"
+
+  - zone: "DATA/EVIDENCE"
+    description: "Data management and evidence handling"
+    mcps:
+      - name: "Google Drive API"
+        desc: "Cloud evidence watcher/ingest"
+        url: "https://developers.google.com/drive/api/guides/upload-files"
+        functions:
+          - "Watch cloud for new evidence"
+        module: "gdrive_agent.py"
+        status: "active"
+        config_template: "gdrive_config.yaml.j2"
+
+# Note: This is a simplified version of the registry. The full implementation
+# would include all MCPs from the original list, each with their complete
+# configuration details and template references.
